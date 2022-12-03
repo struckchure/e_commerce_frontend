@@ -1,3 +1,4 @@
+import { setCookie } from "cookies-next";
 import { useRouter } from "next/router";
 import { useState } from "react";
 import { useMutation } from "react-query";
@@ -14,7 +15,7 @@ export default function Login() {
     },
     {
       onSuccess: (data) => {
-        localStorage.setItem("token", data.data.token);
+        setCookie("token", data.data.token);
         router.push("/");
       },
     }

@@ -1,4 +1,5 @@
 /* eslint-disable @next/next/no-img-element */
+import { getCookie } from "cookies-next";
 import Link from "next/link";
 import { useRouter } from "next/router";
 import { useState } from "react";
@@ -23,7 +24,7 @@ export default function Home() {
     "user",
     () => new AuthService().getProfile(),
     {
-      enabled: !!localStorage.getItem("token"),
+      enabled: !!getCookie("token"),
     }
   );
 
