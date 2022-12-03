@@ -1,8 +1,10 @@
 /* eslint-disable @next/next/no-img-element */
+import { getCookie } from "cookies-next";
 import Link from "next/link";
 import { useRouter } from "next/router";
 import { useState } from "react";
 import { useQuery } from "react-query";
+import AuthService from "../services/auth_service";
 import ProductService from "../services/product_service";
 
 export default function Home() {
@@ -18,19 +20,44 @@ export default function Home() {
     new ProductService().list_product({ search, skip, limit })
   );
 
+  const { data: user } = useQuery(
+    "user",
+    () => new AuthService().getProfile(),
+    {
+      enabled: !!getCookie("token"),
+    }
+  );
+
   return (
     <main className="bg-gray-900 p-4">
       <div className="w-full h-full">
-        <div className="w-full flex flex-col justify-start items-center mx-auto container">
-          <h1 className="text-lg text-white font-mono">Products</h1>
-          <form onSubmit={(e) => e.preventDefault()} className="p-2">
-            <input
-              type="text"
-              value={search}
-              onChange={(e) => setSearch(e.target.value)}
-              className="p-2 border-2 border-gray-300 rounded-md"
-            />
-          </form>
+        <div className="w-full flex justify-between items-center mx-auto container">
+          <div className="w-fit">
+            <form onSubmit={(e) => e.preventDefault()} className="p-2">
+              <input
+                type="text"
+                value={search}
+                placeholder="Search"
+                onChange={(e) => setSearch(e.target.value)}
+              />
+            </form>
+          </div>
+
+          <div className="flex items-center justify-center gap-4">
+            {user ? (
+              <button>{user.data.username}</button>
+            ) : (
+              <>
+                <button>
+                  <Link href="/login">Login</Link>
+                </button>
+
+                <button>
+                  <Link href="/register">Register</Link>
+                </button>
+              </>
+            )}
+          </div>
         </div>
 
         <div className="container mx-auto my-4">
