@@ -29,10 +29,10 @@ export default function Home() {
   );
 
   return (
-    <main className="bg-gray-900 p-4">
-      <div className="w-full h-full">
-        <div className="w-full flex justify-between items-center mx-auto container">
-          <div className="w-fit">
+    <main className="bg-gray-900 p-4 ">
+      <div className="w-full h-full responsive">
+        <div className="w-full flex justify-between items-center mx-auto container responsive">
+          <div className="w-fit shrink">
             <form onSubmit={(e) => e.preventDefault()} className="p-2">
               <input
                 type="text"
@@ -43,11 +43,11 @@ export default function Home() {
             </form>
           </div>
 
-          <div className="flex items-center justify-center gap-4">
+          <div>
             {user ? (
               <button>{user.data.username}</button>
             ) : (
-              <>
+              <div className="grid">
                 <button>
                   <Link href="/login">Login</Link>
                 </button>
@@ -55,7 +55,7 @@ export default function Home() {
                 <button>
                   <Link href="/register">Register</Link>
                 </button>
-              </>
+              </div>
             )}
           </div>
         </div>
