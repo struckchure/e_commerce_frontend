@@ -1,6 +1,5 @@
 import { QueryClient, QueryClientProvider } from "react-query";
 import "../styles/globals.css";
-import "../styles/responsive.css";
 
 const queryClient = new QueryClient();
 
