@@ -1,4 +1,5 @@
 import axios from "axios";
+import { getCookie } from "cookies-next";
 
 const API_URL = process.env.NEXT_PUBLIC_API_URL;
 
@@ -10,8 +11,11 @@ export default class OrderService {
       Object.keys(params).forEach(
         (key) => params[key] == null || (!params[key] && delete params[key])
       );
+      const headers = {
+        Authorization: `Token ${getCookie("token")}`,
+      };
 
-      return axios.get("/orders", { params }).then((res) => res.data);
+      return axios.get("/orders", { params, headers }).then((res) => res.data);
     } catch (error) {
       throw error;
     }
@@ -19,7 +23,11 @@ export default class OrderService {
 
   get_order(id) {
     try {
-      return axios.get(`/orders/${id}`).then((res) => res.data);
+      const headers = {
+        Authorization: `Token ${getCookie("token")}`,
+      };
+
+      return axios.get(`/orders/${id}`, { headers }).then((res) => res.data);
     } catch (error) {
       throw error;
     }
