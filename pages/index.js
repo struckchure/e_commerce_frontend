@@ -3,8 +3,9 @@ import { getCookie } from "cookies-next";
 import Link from "next/link";
 import { useRouter } from "next/router";
 import { useState } from "react";
-import { useQuery } from "react-query";
+import { useMutation, useQuery } from "react-query";
 import AuthService from "../services/auth_service";
+import CartService from "../services/cart_service";
 import ProductService from "../services/product_service";
 
 export default function Home() {
@@ -28,6 +29,16 @@ export default function Home() {
     }
   );
 
+  const cart_mutation = useMutation(
+    ({ product_id, quantity }) => {
+      return new CartService().add_cart_item(product_id, quantity);
+    },
+    {
+      onSuccess: () => {},
+      onError: () => {},
+    }
+  );
+
   return (
     <main className="bg-gray-900 p-4">
       <div className="w-full h-full">
@@ -45,7 +56,15 @@ export default function Home() {
 
           <div className="flex items-center justify-center gap-4">
             {user ? (
-              <button>{user.data.username}</button>
+              <div className="flex gap-2 items-center">
+                <Link href="/cart">
+                  <button>Cart</button>
+                </Link>
+
+                <Link href="/orders">
+                  <button>Orders</button>
+                </Link>
+              </div>
             ) : (
               <>
                 <button>
@@ -72,39 +91,48 @@ export default function Home() {
           ) : (
             <div className="flex justify-start items-start gap-4">
               {products?.data?.map((product) => (
-                <Link href={`/${product.id}`} key={product.id}>
-                  <div className="bg-gray-800 p-4 rounded-md max-w-[250px] min-h-[300px] group hover:cursor-pointer">
-                    <div className="rounded-md overflow-hidden">
-                      <img
-                        src={product.images[0]}
-                        className="w-full h-40 object-cover group-hover:scale-110 transition-all duration-300 transform"
-                        alt={product.name}
-                      />
-                    </div>
-                    <p className="text-white font-mono text-3xl mt-2">
-                      {product.name}
-                    </p>
-                    <label className="text-white font-mono text-lg my-0">
-                      $ {product.price}
-                    </label>
-                    <label className="text-white block">
-                      {product.stock} left
-                    </label>
-
-                    <div className="flex items-center justify-start gap-2 mt-2">
-                      <button className="bg-gray-700 p-2 rounded-md">
-                        <p className="text-white font-mono text-sm my-0">
-                          Buy Now
-                        </p>
-                      </button>
-                      <button className="bg-gray-700 p-2 rounded-md">
-                        <p className="text-white font-mono text-sm my-0">
-                          Add to Cart
-                        </p>
-                      </button>
-                    </div>
+                <div
+                  key={product.id}
+                  className="bg-gray-800 p-4 rounded-md max-w-[250px] min-h-[300px] group hover:cursor-pointer"
+                >
+                  <div className="rounded-md overflow-hidden">
+                    <img
+                      src={product.images[0]}
+                      className="w-full h-40 object-cover group-hover:scale-110 transition-all duration-300 transform"
+                      alt={product.name}
+                    />
                   </div>
-                </Link>
+                  <p className="text-white font-mono text-3xl mt-2">
+                    {product.name}
+                  </p>
+                  <label className="text-white font-mono text-lg my-0">
+                    $ {product.price}
+                  </label>
+                  <label className="text-white block">
+                    {product.stock} left
+                  </label>
+
+                  <div className="flex items-center justify-start gap-2 mt-2">
+                    <button className="bg-gray-700 p-2 rounded-md">
+                      <p className="text-white font-mono text-sm my-0">
+                        Buy Now
+                      </p>
+                    </button>
+                    <button
+                      className="bg-gray-700 p-2 rounded-md"
+                      onClick={() =>
+                        cart_mutation.mutate({
+                          product_id: product.id,
+                          quantity: 1,
+                        })
+                      }
+                    >
+                      <p className="text-white font-mono text-sm my-0">
+                        Add to Cart
+                      </p>
+                    </button>
+                  </div>
+                </div>
               ))}
             </div>
           )}
