@@ -1,15 +1,34 @@
 /* eslint-disable @next/next/no-img-element */
 import Link from "next/link";
 import React from "react";
-import { useQuery } from "react-query";
+import { toast } from "react-hot-toast";
+import { useMutation, useQuery } from "react-query";
 import CartService from "../services/cart_service";
 
-function Cart() {
+export default function CartPage() {
   const {
     data: cart_items,
     isLoading,
     isError,
   } = useQuery("cart", () => new CartService().list_cart_items());
+
+  const { mutate: checkout_mutate, isLoading: cart_isLoading } = useMutation(
+    () => {
+      toast.success("Processing payment link ...");
+
+      return new CartService().checkout_cart();
+    },
+    {
+      onSuccess: (data) => {
+        const { url } = data.data;
+
+        toast.success("Redirecting to payment link ...");
+
+        window.location.href = url;
+      },
+      onError: () => {},
+    }
+  );
 
   if (isLoading) {
     return (
@@ -35,30 +54,42 @@ function Cart() {
         </button>
       </Link>
 
-      <div className="container mx-auto p-4 flex flex-col gap-2">
-        {cart_items?.data?.map((cart_item, index) => (
-          <div
-            key={index}
-            className="bg-gray-800 p-4 rounded-lg flex items-center justify-evenly"
-          >
-            <img
-              src={cart_item.product.images[0]}
-              alt={cart_item.product.name}
-              className="rounded-md w-auto h-auto object-cover"
-            />
-
-            <p className="text-white text-2xl">{cart_item.product.name}</p>
-
-            <p className="text-white text-2xl">X{cart_item.quantity}</p>
-
-            <p className="text-white text-2xl">{cart_item.price}</p>
-          </div>
-        ))}
+      <div className="container mx-auto overflow-hidden bg-gray-800 rounded-lg">
+        <table className="w-full">
+          <thead className="w-full bg-gray-600 border-b-2">
+            <tr>
+              <th className="w-3">#</th>
+              <th>Image</th>
+              <th>Product</th>
+              <th>Quantity</th>
+              <th>Price</th>
+              <th>Date</th>
+            </tr>
+          </thead>
+          <tbody>
+            {cart_items?.data?.map((cart_item, index) => (
+              <tr key={index}>
+                <td className="w-3">{index + 1}</td>
+                <td>
+                  <img
+                    src={cart_item.product.images[0]}
+                    alt={cart_item.product.name}
+                    className="rounded-md w-auto h-auto object-cover"
+                  />
+                </td>
+                <td>{cart_item.product.name}</td>
+                <td>{cart_item.quantity}</td>
+                <td>&#8358; {cart_item.price}</td>
+                <td>{cart_item.created_at}</td>
+              </tr>
+            ))}
+          </tbody>
+        </table>
       </div>
 
-      <button>Checkout</button>
+      <button onClick={checkout_mutate} disabled={cart_isLoading}>
+        Checkout
+      </button>
     </main>
   );
 }
-
-export default Cart;

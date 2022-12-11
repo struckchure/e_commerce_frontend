@@ -3,6 +3,7 @@ import { getCookie } from "cookies-next";
 import Link from "next/link";
 import { useRouter } from "next/router";
 import { useState } from "react";
+import { toast } from "react-hot-toast";
 import { useMutation, useQuery } from "react-query";
 import AuthService from "../services/auth_service";
 import CartService from "../services/cart_service";
@@ -34,8 +35,14 @@ export default function Home() {
       return new CartService().add_cart_item(product_id, quantity);
     },
     {
-      onSuccess: () => {},
-      onError: () => {},
+      onSuccess: (data) => {
+        toast.success(
+          `${data?.data?.product.name} has been added to your cart`
+        );
+      },
+      onError: () => {
+        toast.error("An Error occured while adding product to cart");
+      },
     }
   );
 
@@ -106,7 +113,7 @@ export default function Home() {
                     {product.name}
                   </p>
                   <label className="text-white font-mono text-lg my-0">
-                    $ {product.price}
+                    &#8358; {product.price}
                   </label>
                   <label className="text-white block">
                     {product.stock} left
