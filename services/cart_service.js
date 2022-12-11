@@ -38,4 +38,20 @@ export default class CartService {
       throw error;
     }
   }
+
+  checkout_cart() {
+    try {
+      const headers = {
+        Authorization: `Token ${getCookie("token")}`,
+      };
+
+      return axios({
+        method: "post",
+        url: "/cart/checkout/",
+        headers,
+      }).then((res) => res.data);
+    } catch (error) {
+      throw error;
+    }
+  }
 }

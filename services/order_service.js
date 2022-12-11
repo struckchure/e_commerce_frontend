@@ -3,11 +3,13 @@ import { getCookie } from "cookies-next";
 
 const API_URL = process.env.NEXT_PUBLIC_API_URL;
 
-axios.defaults.baseUrl = API_URL;
+axios.defaults.baseURL = API_URL;
 
 export default class OrderService {
   list_order(params) {
     try {
+      params = params?.length ? params : {};
+
       Object.keys(params).forEach(
         (key) => params[key] == null || (!params[key] && delete params[key])
       );
