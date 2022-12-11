@@ -13,3 +13,20 @@ input {
 button {
   @apply bg-gray-800 hover:bg-gray-700 py-2 px-4 text-white rounded-lg duration-200;
 }
+
+table {
+  @apply w-full;
+}
+
+table thead {
+  @apply w-full bg-gray-600 border-gray-400 border-b-2 border-solid;
+}
+
+table thead th,
+table tbody td {
+  @apply text-white text-left text-sm p-2;
+}
+
+table button {
+  @apply bg-gray-700 hover:bg-gray-900;
+}
