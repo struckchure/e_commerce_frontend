@@ -1,14 +1,12 @@
-import { QueryClient, QueryClientProvider } from "react-query";
+import { Toaster } from "react-hot-toast";
+import StoreProvider from "../lib/store";
 import "../styles/globals.css";
 
-const queryClient = new QueryClient();
-
-function MyApp({ Component, pageProps }) {
+export default function MyApp({ Component, pageProps }) {
   return (
-    <QueryClientProvider client={queryClient}>
+    <StoreProvider>
+      <Toaster />
       <Component {...pageProps} />
-    </QueryClientProvider>
+    </StoreProvider>
   );
 }
-
-export default MyApp;
