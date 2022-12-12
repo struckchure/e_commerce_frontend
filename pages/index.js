@@ -49,7 +49,7 @@ export default function Home() {
   return (
     <main className="bg-gray-900 p-4">
       <div className="w-full h-full">
-        <div className="w-full flex justify-between items-center mx-auto container">
+        <div className="w-full md:flex md:justify-center md:items-center md:mx-auto container sm:flex sm:gap-20">
           <div className="w-fit">
             <form onSubmit={(e) => e.preventDefault()} className="p-2">
               <input
@@ -61,7 +61,7 @@ export default function Home() {
             </form>
           </div>
 
-          <div className="flex items-center justify-center gap-4">
+          <div className="flex items-center sm:justify-center gap-4">
             {user ? (
               <div className="flex gap-2 items-center">
                 <Link href="/cart">
