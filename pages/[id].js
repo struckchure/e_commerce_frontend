@@ -14,19 +14,19 @@ export default function ProductDetails() {
   } = useQuery("product_details", () => new ProductService().get_product(id));
 
   return (
-    <main className="bg-gray-900 p-4 grid place-items-center">
+    <main className="bg-gray-900 p-4 grid place-items-center h-full">
       {isLoading ? (
         <div>
           <p className="animate-pulse">Loading ...</p>
         </div>
       ) : (
         <div className="container mx-auto">
-          <Link href="/" className="fixed top-[5%] left-[10%]">
+          <Link href="/" className="fixed top-[02%] left-[10%]">
             <button className="bg-gray-800 text-white py-4 px-6 text-lg rounded-md">
               Back
             </button>
           </Link>
-          <div className="flex gap-4 justify-between items-start w-full">
+          <div className=" mt-20 md:flex gap-4 justify-between items-start w-full h-full">
             <div className="flex flex-col gap-2">
               <img
                 src={product.data.images[0]}
@@ -56,7 +56,7 @@ export default function ProductDetails() {
                 $ {product.data.price}
               </label>
 
-              <div className="flex items-center justify-start gap-2 mt-2">
+              <div className="md:flex items-center md:justify-start gap-2 mt-2 grid grid-cols-1">
                 <button className="bg-gray-700 p-4 rounded-md">
                   <p className="text-white font-mono text-lg my-0">Buy Now</p>
                 </button>
