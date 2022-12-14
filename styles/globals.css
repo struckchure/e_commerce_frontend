@@ -3,11 +3,16 @@
 @tailwind utilities;
 
 main {
-  @apply h-screen w-full;
+  @apply min-h-screen w-full;
 }
 
-input {
-  @apply py-2 px-4 border-2 border-gray-900 rounded-lg bg-gray-800 text-white;
+input,
+textarea {
+  @apply py-2 px-4 border-2 border-gray-900 rounded-lg bg-gray-800 text-white active:border-none;
+}
+
+textarea {
+  @apply min-h-[100px];
 }
 
 button {

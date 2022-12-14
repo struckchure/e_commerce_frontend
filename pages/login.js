@@ -2,7 +2,7 @@ import { setCookie } from "cookies-next";
 import { useRouter } from "next/router";
 import { useState } from "react";
 import { useMutation } from "react-query";
-import AuthService from "../services/auth_service";
+import AuthService from "../lib/services/auth_service";
 
 export default function Login() {
   const [username, setUsername] = useState("");

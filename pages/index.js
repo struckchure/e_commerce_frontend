@@ -1,13 +1,12 @@
 /* eslint-disable @next/next/no-img-element */
-import { getCookie } from "cookies-next";
 import Link from "next/link";
 import { useRouter } from "next/router";
 import { useState } from "react";
 import { toast } from "react-hot-toast";
 import { useMutation, useQuery } from "react-query";
-import AuthService from "../services/auth_service";
-import CartService from "../services/cart_service";
-import ProductService from "../services/product_service";
+import BaseLayout from "../lib/layouts/base_layout";
+import CartService from "../lib/services/cart_service";
+import ProductService from "../lib/services/product_service";
 
 export default function Home() {
   const router = useRouter();
@@ -20,14 +19,6 @@ export default function Home() {
     error,
   } = useQuery(["products", search, skip, limit], () =>
     new ProductService().list_product({ search, skip, limit })
-  );
-
-  const { data: user } = useQuery(
-    "user",
-    () => new AuthService().getProfile(),
-    {
-      enabled: !!getCookie("token"),
-    }
   );
 
   const cart_mutation = useMutation(
@@ -47,11 +38,11 @@ export default function Home() {
   );
 
   return (
-    <main className="bg-gray-900 p-4">
-      <div className="w-full h-full">
-        <div className="w-full md:flex md:justify-center md:items-center md:mx-auto container sm:flex sm:gap-20">
+    <BaseLayout>
+      <BaseLayout.Navbar
+        leftContent={
           <div className="w-fit">
-            <form onSubmit={(e) => e.preventDefault()} className="p-2">
+            <form onSubmit={(e) => e.preventDefault()}>
               <input
                 type="text"
                 value={search}
@@ -60,32 +51,9 @@ export default function Home() {
               />
             </form>
           </div>
-
-          <div className="flex items-center sm:justify-center gap-4">
-            {user ? (
-              <div className="flex gap-2 items-center">
-                <Link href="/cart">
-                  <button>Cart</button>
-                </Link>
-
-                <Link href="/orders">
-                  <button>Orders</button>
-                </Link>
-              </div>
-            ) : (
-              <>
-                <button>
-                  <Link href="/login">Login</Link>
-                </button>
-
-                <button>
-                  <Link href="/register">Register</Link>
-                </button>
-              </>
-            )}
-          </div>
-        </div>
-
+        }
+      />
+      <div className="w-full h-full">
         <div className="container mx-auto my-4">
           {isLoading ? (
             <p className="text-3xl font-mono w-fit tracking-widest text-white animate-pulse">
@@ -96,19 +64,21 @@ export default function Home() {
               Error
             </p>
           ) : (
-            <div className="flex justify-start items-start gap-4">
+            <div className="flex flex-wrap justify-center md:justify-start gap-4">
               {products?.data?.map((product) => (
                 <div
                   key={product.id}
-                  className="bg-gray-800 p-4 rounded-md max-w-[250px] min-h-[300px] group hover:cursor-pointer"
+                  className="bg-gray-800 p-4 rounded-md w-[250px] min-h-[300px] group hover:cursor-pointer"
                 >
-                  <div className="rounded-md overflow-hidden">
-                    <img
-                      src={product.images[0]}
-                      className="w-full h-40 object-cover group-hover:scale-110 transition-all duration-300 transform"
-                      alt={product.name}
-                    />
-                  </div>
+                  <Link href={`/${product.id}/`}>
+                    <div className="rounded-md overflow-hidden">
+                      <img
+                        src={product.images[0]}
+                        className="w-full h-40 object-cover group-hover:scale-110 transition-all duration-300 transform"
+                        alt={product.name}
+                      />
+                    </div>
+                  </Link>
                   <p className="text-white font-mono text-3xl mt-2">
                     {product.name}
                   </p>
@@ -145,6 +115,6 @@ export default function Home() {
           )}
         </div>
       </div>
-    </main>
+    </BaseLayout>
   );
 }
