@@ -1,8 +1,8 @@
 /* eslint-disable @next/next/no-img-element */
-import Link from "next/link";
 import { useRouter } from "next/router";
 import { useQuery } from "react-query";
-import ProductService from "../services/product_service";
+import BaseLayout from "../lib/layouts/base_layout";
+import ProductService from "../lib/services/product_service";
 
 export default function ProductDetails() {
   const router = useRouter();
@@ -13,25 +13,33 @@ export default function ProductDetails() {
     error,
   } = useQuery("product_details", () => new ProductService().get_product(id));
 
+  if (isLoading) {
+    return (
+      <div>
+        <p className="text-white text-3xl">Loading ...</p>
+      </div>
+    );
+  }
+
+  if (error) {
+    return (
+      <div>
+        <p className="text-white text-3xl">An Error Occured</p>
+      </div>
+    );
+  }
+
   return (
-    <main className="bg-gray-900 p-4 grid place-items-center h-full">
-      {isLoading ? (
-        <div>
-          <p className="animate-pulse">Loading ...</p>
-        </div>
-      ) : (
-        <div className="container mx-auto">
-          <Link href="/" className="fixed top-[02%] left-[10%]">
-            <button className="bg-gray-800 text-white py-4 px-6 text-lg rounded-md">
-              Back
-            </button>
-          </Link>
-          <div className=" mt-20 md:flex gap-4 justify-between items-start w-full h-full">
+    <BaseLayout>
+      <BaseLayout.Navbar />
+      <div className="container mx-auto py-10">
+        <div className="p-4 grid place-items-center h-full">
+          <div className="md:flex gap-4 justify-between items-start w-full h-full">
             <div className="flex flex-col gap-2">
               <img
                 src={product.data.images[0]}
                 alt={product.data.name}
-                className="rounded-md w-full h-[300px] object-cover"
+                className="rounded-md w-full h-[500px] object-cover"
               />
 
               <div className="flex gap-2 min-w-full overflow-x-auto h-fit">
@@ -53,14 +61,14 @@ export default function ProductDetails() {
               <p className="text-white text-lg">{product.data.description}</p>
               <p className="text-sm text-gray-300">{product.data.stock} left</p>
               <label className="block text-white text-[3em]">
-                $ {product.data.price}
+                &#8358; {product.data.price}
               </label>
 
               <div className="md:flex items-center md:justify-start gap-2 mt-2 grid grid-cols-1">
-                <button className="bg-gray-700 p-4 rounded-md">
+                <button className="py-4 px-6">
                   <p className="text-white font-mono text-lg my-0">Buy Now</p>
                 </button>
-                <button className="bg-gray-700 p-4 rounded-md">
+                <button className="py-4 px-6">
                   <p className="text-white font-mono text-lg my-0">
                     Add to Cart
                   </p>
@@ -69,7 +77,7 @@ export default function ProductDetails() {
             </div>
           </div>
         </div>
-      )}
-    </main>
+      </div>
+    </BaseLayout>
   );
 }
